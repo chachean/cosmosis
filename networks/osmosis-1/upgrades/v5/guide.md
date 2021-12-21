@@ -12,6 +12,17 @@ sudo swapon /swapfile
 
 In depth swap setup instructions: https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-20-04
 
+# GO Version
+Please note, Osmosis `v5.0.0` requires go version `1.17`, if you run `go version` and it says `1.16.x` you should uninstall go and update to `1.17`.
+The easiest way to do this is with these scriptshttps://github.com/canha/golang-tools-install-script
+
+To uninstall run:
+
+```curl https://raw.githubusercontent.com/canha/golang-tools-install-script/master/goinstall.sh | bash -s -- --remove```
+
+Followed this to reinstall the latest `1.17.x` version:
+
+```curl https://raw.githubusercontent.com/canha/golang-tools-install-script/master/goinstall.sh | bash```
 
 # Install and setup Cosmovisor
 
@@ -59,8 +70,10 @@ echo "export DAEMON_HOME=$HOME/.osmosisd" >> ~/.profile
 echo "export DAEMON_ALLOW_DOWNLOAD_BINARIES=false" >> ~/.profile
 echo "export DAEMON_LOG_BUFFER_SIZE=512" >> ~/.profile
 echo "export DAEMON_RESTART_AFTER_UPGRADE=true" >> ~/.profile
+echo "export UNSAFE_SKIP_BACKUP=true" >> ~/.profile
 source ~/.profile
 ```
+You may leave out `UNSAFE_SKIP_BACKUP=true`, however the backup takes a decent amount of time and public snapshots of old states are available.
 
 Finally, you should copy the current osmosisd binary into the cosmovisor/genesis folder.
 ```
@@ -76,7 +89,7 @@ To prepare for the upgrade, you need to create some folders, and build and insta
 mkdir -p ~/.osmosisd/cosmovisor/upgrades/v5/bin
 git clone https://github.com/osmosis-labs/osmosis
 cd osmosis
-git checkout v5.0.0-rc2
+git checkout v5.0.0
 make build
 cp build/osmosisd ~/.osmosisd/cosmovisor/upgrades/v5/bin
 ```
